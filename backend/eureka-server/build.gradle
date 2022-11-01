@@ -1,0 +1,46 @@
+plugins {
+	id 'org.springframework.boot' version '2.7.4'
+	id 'io.spring.dependency-management' version '1.0.14.RELEASE'
+	id 'java'
+	id 'application'
+	id 'pl.allegro.tech.build.axion-release' version '1.14.0'
+}
+
+group = 'com.microservices'
+/**
+ * her yeni git push yeni versiyon demek,
+ * versiyonlama bu şekilde her seferinde elle değiştirilmek zorunda
+ * gradle axion paketi bu durum ortadan kalkar
+ *
+version = '0.0.1-SNAPSHOT'*/
+project.version = scmVersion.version
+sourceCompatibility = '11'
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+	set('springCloudVersion', "2021.0.4")
+	javaMainClass = 'com.microservices.eurekaserver.EurekaServerApplication'
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+application {
+	mainClassName = javaMainClass
+}

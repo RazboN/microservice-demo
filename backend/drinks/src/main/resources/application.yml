@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: drinks-menu-service
+  data:
+    mongodb:
+      database: DrinksMenu
+      host: drinks-menu-db
+      port: 27017
+      uri: mongodb://drinks-menu-db:27017
+      #uri: mongodb://localhost:27017
+server:
+  port: 8002
+  error:
+    whitelabel:
+      enabled: false
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-server:8761/eureka/

@@ -1,0 +1,80 @@
+version: "3.9"
+
+services:
+  #databases
+  drinks-menu-db:
+    image: mongo
+    container_name: drinks-menu-db-container
+    command: mongod --replSet mongo-set
+    ports:
+      - "27017:27017"
+    volumes:
+      - drinksDbVol:/app/services/drinks
+    depends_on:
+      - drinks-menu-replica-db
+    links:
+      - drinks-menu-replica-db
+    networks:
+      - mongoDrinks
+  drinks-menu-replica-db:
+    image: mongo
+    container_name: drinks-menu-db-replica-container
+    command: mongod --replSet mongo-set
+    ports:
+      - "27018:27017"
+    volumes:
+      - drinksDbVolRep:/app/services/drinks-replica
+    restart: always
+    networks:
+      - mongoDrinks
+
+  eureka-server:
+    image: backend-discovery-server
+    container_name: backend-discovery-container
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://eureka-server:8761" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    build:
+      context: ./eureka-server/
+      dockerfile: Dockerfile
+    ports:
+      - "8761:8761"
+    restart: always
+
+  #backend services
+  main-menu-service:
+    image: cafe-order/main-menu
+    container_name: main-menu-service-container
+    build:
+      context: ./main-menu-service/
+      dockerfile: Dockerfile
+    links:
+      - eureka-server
+    depends_on:
+      - eureka-server
+    ports:
+      - "8001:8001"
+    restart: always
+
+  drinks-service:
+    image: cafe-order/drinks
+    container_name: drinks-menu-service
+    build:
+      context: ./drinks/
+      dockerfile: Dockerfile
+    links:
+      - drinks-menu-db
+    depends_on:
+      - drinks-menu-db
+      - eureka-server
+    ports:
+      - "8002:8002"
+    restart: always
+
+networks:
+  mongoDrinks:
+volumes:
+  drinksDbVol:
+  drinksDbVolRep:

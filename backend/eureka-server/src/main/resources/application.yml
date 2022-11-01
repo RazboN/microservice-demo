@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: eureka-server
+
+server:
+  port: 8761
+  error:
+    whitelabel:
+      enabled: false
+
+eureka:
+  hostname: eureka-server
+  instance:
+    statusPageUrl: https://${eureka.hostname}:8761/info
+    healthCheckUrl: https://${eureka.hostname}:8761/health
+    homePageUrl: https://${eureka.hostname}:8761/
+  client:
+    fetchRegistry: 'false'
+    registerWithEureka: 'false'

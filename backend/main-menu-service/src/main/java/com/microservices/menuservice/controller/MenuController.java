@@ -6,18 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/menu")
+@RequestMapping("/api/menu/drinks")
 public class MenuController {
     @Autowired
     RestTemplate _restTemplate;
@@ -27,7 +23,7 @@ public class MenuController {
 
 	}
 
-	@GetMapping("/drinks")
+	@GetMapping
 	public List<Drink> getDrinksMenu(){
         try{
             ResponseEntity<List<Drink>> responseEntity =
@@ -43,7 +39,24 @@ public class MenuController {
         }
         catch (Exception ex){
             log.error(ex.getMessage());
+            return null;
         }
-        return null;
 	}
+
+    @PostMapping
+    public Drink addMenuItem(@RequestBody Drink newItem){
+        try {
+            ResponseEntity<Drink> savedItem =
+                _restTemplate.postForObject(
+                        "http://drinks-menu-service/drinksMenu",
+                        newItem,
+                        ResponseEntity.class);
+
+            return savedItem.getBody();
+        }
+        catch (Exception ex){
+            log.error("Error during savin {}", ex.getMessage());
+            return null;
+        }
+    }
 }

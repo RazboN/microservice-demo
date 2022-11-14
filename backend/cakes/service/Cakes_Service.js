@@ -1,4 +1,4 @@
-const { CakeSchema } = require("../schema/CakeSchema");
+const { CakeSchema } = require("../model/CakeSchema");
 
 const getCakes = async () => {
     return await CakeSchema.find({});

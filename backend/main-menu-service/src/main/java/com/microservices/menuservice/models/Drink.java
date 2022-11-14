@@ -9,7 +9,7 @@ import lombok.*;
 @Builder
 @Data
 public class Drink {
-    //private String id;
+    private String id;
     private String name;
     private int price;
 }

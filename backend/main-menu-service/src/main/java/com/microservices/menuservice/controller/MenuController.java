@@ -3,6 +3,8 @@ package com.microservices.menuservice.controller;
 import com.microservices.menuservice.models.Drink;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +18,9 @@ import java.util.List;
 @RequestMapping("/api/menu/drinks")
 public class MenuController {
     @Autowired
-    RestTemplate _restTemplate;
+    private RestTemplate _restTemplate;
+
+    private final String DRINKSMENU = "drinks_menu";
 
     @GetMapping
 	public void getAllMenuItems(){
@@ -24,6 +28,7 @@ public class MenuController {
 	}
 
 	@GetMapping
+    @Cacheable(DRINKSMENU)
 	public List<Drink> getDrinksMenu(){
         try{
             ResponseEntity<List<Drink>> responseEntity =
@@ -44,6 +49,7 @@ public class MenuController {
 	}
 
     @PostMapping
+    @CachePut(DRINKSMENU)
     public Drink addMenuItem(@RequestBody Drink newItem){
         try {
             ResponseEntity<Drink> savedItem =

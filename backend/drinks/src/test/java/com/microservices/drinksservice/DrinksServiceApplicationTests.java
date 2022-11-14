@@ -7,6 +7,6 @@ import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 class DrinksServiceApplicationTests {
     @Test
     void contextLoads() {
-        
+
     }
 }
